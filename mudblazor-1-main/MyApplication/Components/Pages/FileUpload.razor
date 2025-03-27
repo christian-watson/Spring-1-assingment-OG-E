@@ -1,18 +1,10 @@
 @page "/upload"
+@inject NavigationManager NavManager
 
 <PageTitle>File Upload</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">File Upload</MudText>
 
-<MudFileUpload T="IBrowserFile" Accept=".csv" FilesChanged="FileUploaded" MaximumFileCount="100">
-    <ActivatorContent>
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.CloudUpload">
-            Only .csv files
-        </MudButton>
-    </ActivatorContent>
-</MudFileUpload>
 
 @if (readerIDDict != null && readerIDDict.Count > 0){
     int maxVal = 0;
@@ -157,6 +149,8 @@ else
         </MudItem>
     </MudGrid>
 </div>
+
+<MudButton Variant="Variant.Filled" OnClick="returnHome">Upload another file</MudButton>
 @code
 {
     private int Index = -1;
@@ -184,7 +178,9 @@ else
 
     public void UploadFiles2(IBrowserFile file)
     {
+        Console.WriteLine("test");
         files.Add(file);
+        NavManager.NavigateTo("upload");
         FileUploaded(file);
     }
     
@@ -256,8 +252,7 @@ else
             }
             return returnDict;
             }
-        public static List<String[]> returnStrings(string Filename)
-{
+    public static List<String[]>? returnStrings(string Filename){
     String line;
     List<String[]> returnString = new List<string[]>();
     try
@@ -345,12 +340,16 @@ else
         FileType = StaticReaderEvent.FileType;
         FileName = StaticReaderEvent.FileName;
         LastModified = StaticReaderEvent.LastModified;
+        Console.WriteLine("new test thingy");
         StateHasChanged();
         try
         {
             var fileStream = browserFile.OpenReadStream(MAX_FILESIZE);
+            Console.WriteLine("new test thingy2");
             var targetFilePath = Path.Combine(Path.GetTempPath(), FileName);
+            Console.WriteLine("new test thingy3");
             Console.WriteLine($"Saving file to: {targetFilePath}");
+            Console.WriteLine("new test thingy4");
 
             using (var destinationStream = new FileStream(targetFilePath, FileMode.Create))
             {
@@ -362,7 +361,7 @@ else
         }
         catch (Exception exception)
         {
-            ErrorMessage = exception.Message;
+            ErrorMessage = exception.Message + "test";
         }
     }
 }
@@ -396,6 +395,22 @@ private void finalDisplay(string fileName)
         }
         
         StateHasChanged();
+    }
+    //takes the parameter that I passed from the url in Home.razor
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string FilePath { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(FilePath))
+        {
+            finalDisplay(FilePath);
+            StateHasChanged();
+        }
+    }
+    private void returnHome(){
+        NavManager.NavigateTo("/");
     }
 
 }
