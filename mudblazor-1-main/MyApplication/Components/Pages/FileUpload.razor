@@ -5,6 +5,26 @@
 
 <MudText Typo="Typo.h3" GutterBottom="true">File Upload</MudText>
 
+<MudText Align="Align.Center"><b>Center</b> Lorem ipsum dolor sit amet.</MudText>
+<MudCarousel Class="mud-width-full" Style="height:100px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
+    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            @* <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" /> *@
+            <MudText Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Most scans by UserID: @returnMostScans()</MudText>
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+</MudCarousel>
+
 
 @if (readerIDDict != null && readerIDDict.Count > 0){
     int maxVal = 0;
@@ -21,23 +41,7 @@
     <p>Most scans: @maxVal</p>
 }
 
-@if (readerIDDict != null && readerIDDict.Count > 0){
-    List<string> strings = new List<string>();
-    @foreach (var kvp in readerIDDict)
-            {
-                @foreach(ReaderEvent i in kvp.Value){
-                    strings.Add(i.ReaderIdHash);
-                }
-                
-                
-    }
-    var most = (from i in strings
-            group i by i into grp
-            orderby grp.Count() descending
-            select grp.Key).First();
-    
-    <p>Most scans: @most</p>
-}
+
 
 @if (!string.IsNullOrEmpty(ErrorMessage))
 {
@@ -63,7 +67,6 @@
        
     </MudList>
 }
-
 @if (readerIDDict != null && readerIDDict.Count > 0)
 {
 
@@ -153,6 +156,12 @@ else
 <MudButton Variant="Variant.Filled" OnClick="returnHome">Upload another file</MudButton>
 @code
 {
+    // variables 
+    private bool arrows = true;
+    private bool bullets = true;
+    private bool enableSwipeGesture = true;
+    private bool autocycle = true;
+    private Transition transition = Transition.Slide;
     private int Index = -1;
     public ChartOptions Options = new ChartOptions();
     
@@ -411,6 +420,26 @@ private void finalDisplay(string fileName)
     }
     private void returnHome(){
         NavManager.NavigateTo("/");
+    }
+
+    private string returnMostScans(){
+    @if (readerIDDict != null && readerIDDict.Count > 0){
+    List<string> strings = new List<string>();
+    @foreach (var kvp in readerIDDict)
+            {
+                @foreach(ReaderEvent i in kvp.Value){
+                    strings.Add(i.ReaderIdHash);
+                }
+                
+                
+    }
+    var most = (from i in strings
+            group i by i into grp
+            orderby grp.Count() descending
+            select grp.Key).First();
+    return most;
+    }
+    return null;
     }
 
 }
