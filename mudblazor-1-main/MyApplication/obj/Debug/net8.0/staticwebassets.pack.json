@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\images\\OGE.png",
+      "PackagePath": "staticwebassets\\images\\OGE.png"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.MyApplication.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

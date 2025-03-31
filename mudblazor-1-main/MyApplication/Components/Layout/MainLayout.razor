@@ -6,7 +6,7 @@
 <MudSnackbarProvider />
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIcon Class="mx-auto my-auto" Icon="C:\Users\chisc\OneDrive\Desktop\programming assignments\Spring 1 assingment OG&E\mudblazor-1-main\MyApplication\OGE+Logo+Color.png" Size="@Size.Large" />
+        <img src="images/OGE.png" width="auto" height="80" />
         <MudSpacer />
         <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
@@ -16,7 +16,6 @@
     </MudMainContent>
 </MudLayout>
 
-<MudButton Color="Color.Primary">Click Me</MudButton>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
@@ -25,6 +24,7 @@
 </div>
 
 @code {
+
     private bool _drawerOpen = true;
     private bool _isDarkMode = false;
     private MudTheme? _theme = null;
@@ -53,7 +53,7 @@
 
     private readonly PaletteLight _lightPalette = new()
     {
-        Primary = "#ef4638",
+        Primary = "#000000",
         Secondary = "#FFFFFF",  
         Black = "#110e2d",
         AppbarText = "#424242",
@@ -65,8 +65,8 @@
 
     private readonly PaletteDark _darkPalette = new()
     {
-        Primary = "#ef4638",
-        Secondary = "#000000",
+        Primary = "#000000",
+        Secondary = "#FFFFFF",
         Surface = "#1e1e2d",
         Background = "#1a1a27",
         BackgroundGray = "#151521",

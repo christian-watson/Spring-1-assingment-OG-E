@@ -1,21 +1,17 @@
 @page "/upload"
 @inject NavigationManager NavManager
 
-<PageTitle>File Upload</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">File Upload</MudText>
-
-<MudText Align="Align.Center"><b>Center</b> Lorem ipsum dolor sit amet.</MudText>
-<MudCarousel Class="mud-width-full" Style="height:100px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
+<MudCarousel Class="mud-width-full" Style="height:100px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" AutoCycleTime ="@autocycletime" TData="object">
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
         <div class="d-flex" style="height:100%">
             @* <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" /> *@
-            <MudText Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Most scans by UserID: @returnMostScans()</MudText>
+            <MudText Style="font-size:20px"  Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Most scans by UserID: @returnMostScans()</MudText>
         </div>
     </MudCarouselItem>
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
         <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+            <MudText Style="font-size:20px" Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Most scans: @mostReaderScans()</MudText>
         </div>
     </MudCarouselItem>
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
@@ -25,8 +21,9 @@
     </MudCarouselItem>
 </MudCarousel>
 
+<br><br>
 
-@if (readerIDDict != null && readerIDDict.Count > 0){
+@* @if (readerIDDict != null && readerIDDict.Count > 0){
     int maxVal = 0;
     
     @foreach (var kvp in readerIDDict)
@@ -39,7 +36,7 @@
                 }     
     }
     <p>Most scans: @maxVal</p>
-}
+} *@
 
 
 
@@ -52,7 +49,7 @@
     @if(ReaderEvent.returnStrings(FileName) != null){
     <p>Lines in the csv: @ReaderEvent.returnStrings(FileName).Count</p>
     }
-</div>>
+</div>
 
 
 @if (files != null)
@@ -157,6 +154,7 @@ else
 @code
 {
     // variables 
+    private TimeSpan autocycletime = new TimeSpan(0,0,10);
     private bool arrows = true;
     private bool bullets = true;
     private bool enableSwipeGesture = true;
@@ -440,6 +438,27 @@ private void finalDisplay(string fileName)
     return most;
     }
     return null;
+    }
+
+    private string mostReaderScans(){
+        @if (readerIDDict != null && readerIDDict.Count > 0){
+        int maxVal = 0;
+        string maxValReader = "";
+            @foreach (var kvp in readerIDDict)
+                {
+                var readerId = kvp.Key; 
+                var readerEvents = kvp.Value;
+                var readerName = readerEvents.First().ReaderDesc;
+                if(readerEvents.Count > maxVal){
+                    maxVal = readerEvents.Count;
+                    maxValReader = readerName + " with " + maxVal + " scans.";
+                }     
+        }
+    return maxValReader;
+    }
+    else{
+        return null;
+    }
     }
 
 }

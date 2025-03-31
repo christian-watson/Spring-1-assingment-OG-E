@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "07uQC3U0MXudttJPLGsCaMnb44zXL9NaF4gd8y4k1Vc=",
+  "Hash": "LhcsWSJ313Rvh9JdUTKPPkrdrzuUtc/nf0udlj0dWd8=",
   "Source": "MyApplication",
   "BasePath": "_content/MyApplication",
   "Mode": "Default",
@@ -72,6 +72,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\images\\OGE.png",
+      "SourceId": "MyApplication",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
+      "BasePath": "_content/MyApplication",
+      "RelativePath": "images/OGE.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\OGE.png"
     }
   ]
 }
