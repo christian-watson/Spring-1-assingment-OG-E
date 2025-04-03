@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
@@ -9,7 +10,10 @@
         <img src="images/OGE.png" width="auto" height="80" />
         <MudSpacer />
         <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert"
+         AriaLabel="Open user menu">
+    <MudMenuItem Label="Upload a new file" OnClick="@returnHome"/>
+</MudMenu>
     </MudAppBar>
     <MudMainContent Class="mt-16 pa-4">
         @Body
@@ -49,6 +53,9 @@
     private void DarkModeToggle()
     {
         _isDarkMode = !_isDarkMode;
+    }
+    private void returnHome(){
+        NavigationManager.NavigateTo("/");
     }
 
     private readonly PaletteLight _lightPalette = new()
