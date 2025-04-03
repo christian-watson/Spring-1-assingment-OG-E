@@ -16,28 +16,18 @@
     </MudCarouselItem>
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
         <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+            <MudText Style="font-size:20px" Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Unique users scanned: @uniqueUsers()</MudText>
         </div>
     </MudCarouselItem>
+    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudText Style="font-size:20px" Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Least reader scans: @foreach(var i in leastReaderScans()){@i}</MudText>
+        </div>
+    </MudCarouselItem>
+    
 </MudCarousel>
 
 <br><br>
-
-@* @if (readerIDDict != null && readerIDDict.Count > 0){
-    int maxVal = 0;
-    
-    @foreach (var kvp in readerIDDict)
-            {
-                var readerId = kvp.Key; 
-                var readerEvents = kvp.Value;
-                var readerName = readerEvents.First().ReaderDesc;
-                if(readerEvents.Count > maxVal){
-                    maxVal = readerEvents.Count;
-                }     
-    }
-    <p>Most scans: @maxVal</p>
-} *@
-
 
 
 @if (!string.IsNullOrEmpty(ErrorMessage))
@@ -66,7 +56,6 @@
 }
 @if (readerIDDict != null && readerIDDict.Count > 0)
 {
-
     <MudSimpleTable>
         <thead>
             <tr style="background-color: black; color:white;">
@@ -76,16 +65,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var kvp in readerIDDict)
+            @foreach (var readerEvents in processTopFive())
             {
-                var readerId = kvp.Key; 
-                var readerEvents = kvp.Value;
+                var readerId = readerEvents.First().ReaderId;
                 var readerName = readerEvents.First().ReaderDesc;
+                var scanCount = readerEvents.Count;
 
                 <tr>
                     <td>@readerId</td>
                     <td>@readerName</td>
-                    <td>@readerEvents.Count</td>
+                    <td>@scanCount</td>
                 </tr>
             }
         </tbody>
@@ -102,7 +91,7 @@ else
     }
 
 }
-
+<br><br>
 @if (masterDictionary != null && masterDictionary.Count > 0)
 {
 
@@ -114,6 +103,8 @@ else
             </tr>
         </thead>
         <tbody>
+            @if(masterDictionary != null){
+                @* List<ReaderEvent> readerEventsList = processTopFive(); *@
             @foreach (var kvp in masterDictionary)
             {
                 var dayOfWeek = kvp.Key; 
@@ -123,6 +114,10 @@ else
                     <td>@dayOfWeek</td>
                     <td>@readerEvents.Count</td>
                 </tr>
+            }
+            @* @foreach(var i in readerEventsList){
+                } *@
+            }
             }
         </tbody>
     </MudSimpleTable>
@@ -140,17 +135,9 @@ else
 }
 <div>
     <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options"/>
-    <MudGrid>
-        <MudItem xs="6">
-            <MudText Typo="Typo.body1" Class="py-3">Selected: @(Index < 0 ? "None" : Series[Index].Name)</MudText>
-        </MudItem>
-        <MudItem xs="6">
-            <MudSlider @bind-Value="Options.LineStrokeWidth" Min="1" Max="10" Color="Color.Info">Line Width: @Options.LineStrokeWidth.ToString()</MudSlider>
-        </MudItem>
-    </MudGrid>
 </div>
 
-<MudButton Variant="Variant.Filled" OnClick="returnHome">Upload another file</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="returnHome">Upload another file</MudButton>
 @code
 {
     // variables 
@@ -161,14 +148,15 @@ else
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
     private int Index = -1;
-    public ChartOptions Options = new ChartOptions();
+    public ChartOptions Options = new ChartOptions(){
+        ChartPalette = new[] { "#ef4638"},
+    };
     
     public string[] XAxisLabels = {"Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday","Sunday"};
     IList<IBrowserFile> files = new List<IBrowserFile>();
     private Dictionary<string, List<ReaderEvent>> readerIDDict = StaticReaderEvent.ReaderIDDict;
     private Dictionary<string, List<ReaderEvent>> masterDictionary = StaticReaderEvent.MasterDictionary;
     public List<ChartSeries> Series = StaticReaderEvent.Series;
-
     public string FileName { get; set; } = StaticReaderEvent.FileName;
     public long FileSize { get; set; } = StaticReaderEvent.FileSize;
     public long FileSizeMB { get; set; } = StaticReaderEvent.FileSizeMB;
@@ -322,7 +310,7 @@ else
         public static Dictionary<string, List<ReaderEvent>> MasterDictionary { get; set; } = new();
         public static List<ChartSeries> Series  { get; set; } = new()
         {
-            new ChartSeries() { Name = "Days of the week", Data = new double[6] },
+            new ChartSeries() { Name = "Days of the week", Data = new double[6]  },
         };
     }
 
@@ -421,9 +409,9 @@ private void finalDisplay(string fileName)
     }
 
     private string returnMostScans(){
-    @if (readerIDDict != null && readerIDDict.Count > 0){
+    if (readerIDDict != null && readerIDDict.Count > 0){
     List<string> strings = new List<string>();
-    @foreach (var kvp in readerIDDict)
+    foreach (var kvp in readerIDDict)
             {
                 @foreach(ReaderEvent i in kvp.Value){
                     strings.Add(i.ReaderIdHash);
@@ -438,6 +426,22 @@ private void finalDisplay(string fileName)
     return most;
     }
     return null;
+    }
+
+    private int uniqueUsers(){
+    int count = 0;
+    List<string> strings = new List<string>();
+    if (readerIDDict != null && readerIDDict.Count > 0){
+        foreach(var kvp in readerIDDict){
+            @foreach(ReaderEvent i in kvp.Value){
+                    if(!strings.Contains(i.ReaderIdHash)){
+                        strings.Add(i.ReaderIdHash);
+                        count++;
+                    }
+                }
+        }
+    }
+    return count;
     }
 
     private string mostReaderScans(){
@@ -460,5 +464,50 @@ private void finalDisplay(string fileName)
         return null;
     }
     }
+
+    private List<string> leastReaderScans(){
+        @if (readerIDDict != null && readerIDDict.Count > 0){
+        List<string> minVals = new List<string>();
+        int minVal = int.MaxValue;
+        string minValReader = "";
+            @foreach (var kvp in readerIDDict)
+                {
+                var readerId = kvp.Key; 
+                var readerEvents = kvp.Value;
+                var readerName = readerEvents.First().ReaderDesc;
+                if(minVal > readerEvents.Count){
+                    minVal = readerEvents.Count;
+                }     
+        }
+    @foreach (var kvp in readerIDDict)
+                {
+                var readerId = kvp.Key; 
+                var readerEvents = kvp.Value;
+                var readerName = readerEvents.First().ReaderDesc;
+                if(minVal == readerEvents.Count){
+                    minValReader = readerName + " with " + minVal + " scan(s). ";
+                    minVals.Add(minValReader);
+                }     
+        }
+    Console.WriteLine(minVals.Count);
+    return minVals;
+    }
+    else{
+        return null;
+    }
+    }
+
+    private List<List<ReaderEvent>> processTopFive(){
+    if (readerIDDict == null || readerIDDict.Count == 0)
+    {
+        return new List<List<ReaderEvent>>();
+    }
+
+    return readerIDDict
+        .OrderByDescending(kvp => kvp.Value.Count)
+        .Take(5)
+        .Select(kvp => kvp.Value)
+        .ToList();
+}
 
 }
