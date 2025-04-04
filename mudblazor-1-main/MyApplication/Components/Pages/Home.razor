@@ -2,8 +2,8 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Home</PageTitle>
-
-<MudText Typo="Typo.h3" GutterBottom="true">Welcomee to our OG&E csv analysis project!</MudText>
+<div style="text-align: center">
+<MudText Typo="Typo.h3" GutterBottom="true">Welcome to our OG&E csv analysis project!</MudText>
 <MudText Class="mb-8">Click the button below to upload your .csv file!</MudText>
 
 <MudFileUpload T="IBrowserFile" Accept=".csv" FilesChanged="Navigate" MaximumFileCount="100">
@@ -15,7 +15,7 @@
         </MudButton>
     </ActivatorContent>
 </MudFileUpload>
-
+</div>
 
 
 @code{
@@ -29,7 +29,7 @@
         using var stream = file.OpenReadStream(MAX_FILESIZE);
         using var fileStream = new FileStream(tempPath, FileMode.Create);
         await stream.CopyToAsync(fileStream);
-        //allows fileuploda to access the filepath
+        //allows fileupload to access the filepath through the url
          NavigationManager.NavigateTo($"/upload?filePath={Uri.EscapeDataString(tempPath)}");
         
     }

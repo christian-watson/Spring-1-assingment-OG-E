@@ -1,7 +1,7 @@
 @page "/upload"
 @inject NavigationManager NavManager
 
-
+@* mudcarousel item that displays the most scans by user IDs, the most scans on a reader, the unique users scanned, and the least reader scans*@
 <MudCarousel Class="mud-width-full" Style="height:100px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" AutoCycleTime ="@autocycletime" TData="object">
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
         <div class="d-flex" style="height:100%">
@@ -35,12 +35,6 @@
     <div>Error: @ErrorMessage</div>
 }
 
-<div>
-    @if(ReaderEvent.returnStrings(FileName) != null){
-    <p>Lines in the csv: @ReaderEvent.returnStrings(FileName).Count</p>
-    }
-</div>
-
 
 @if (files != null)
 {
@@ -54,6 +48,7 @@
        
     </MudList>
 }
+@* loops through the top five list in order of reader scans, descending order *@
 @if (readerIDDict != null && readerIDDict.Count > 0)
 {
     <MudSimpleTable>
@@ -92,6 +87,7 @@ else
 
 }
 <br><br>
+@* loops through events and orders them in days of the week  *@
 @if (masterDictionary != null && masterDictionary.Count > 0)
 {
 
@@ -99,12 +95,10 @@ else
         <thead>
             <tr style="background-color: black; color:white;">
                 <th>Day of week</th>
-                <th>Number of events</th>
+                <th>Number of scans per day</th>
             </tr>
         </thead>
         <tbody>
-            @if(masterDictionary != null){
-                @* List<ReaderEvent> readerEventsList = processTopFive(); *@
             @foreach (var kvp in masterDictionary)
             {
                 var dayOfWeek = kvp.Key; 
@@ -114,9 +108,6 @@ else
                     <td>@dayOfWeek</td>
                     <td>@readerEvents.Count</td>
                 </tr>
-            }
-            @* @foreach(var i in readerEventsList){
-                } *@
             }
             }
         </tbody>
@@ -133,6 +124,7 @@ else
     }
 
 }
+@* chart that displays days of the week activity*@
 <div>
     <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options"/>
 </div>
@@ -213,7 +205,7 @@ else
         public override string ToString(){
             return $"Time: {Time}. Location: {Location}. Reader Description: {ReaderDesc}. DevId: {DevId}. Machine ID: {MachineId}";
         }
-
+        // populates the dictionary that contains the date time info with days of the week
          public static Dictionary<string,List<ReaderEvent>> masterDict(List<ReaderEvent> newReaderEvents){
             Dictionary<string,List<ReaderEvent>> keyValuePairs = new Dictionary<string, List<ReaderEvent>>();
             foreach(ReaderEvent i in newReaderEvents){
@@ -231,7 +223,7 @@ else
             }
             return keyValuePairs;
         }
-        
+        // populates the dictionary with all of the reader events and readers
         public static Dictionary<String, List<ReaderEvent>> returnDictionary(List<ReaderEvent> readerEvents){
             Dictionary<String,List<ReaderEvent>> returnDict = new Dictionary<string, List<ReaderEvent>>();
             foreach(ReaderEvent i in readerEvents){
@@ -362,6 +354,7 @@ else
 }
 
 private void finalDisplay(string fileName)
+// calls the method to populate the dictionaries and lists, displays info
     {
         List<string[]> listCount = ReaderEvent.returnStrings(fileName);
         if (listCount != null)
@@ -407,7 +400,7 @@ private void finalDisplay(string fileName)
     private void returnHome(){
         NavManager.NavigateTo("/");
     }
-
+    // returns which userID has the most scans
     private string returnMostScans(){
     if (readerIDDict != null && readerIDDict.Count > 0){
     List<string> strings = new List<string>();
@@ -427,7 +420,7 @@ private void finalDisplay(string fileName)
     }
     return null;
     }
-
+    // identifies how many unique users there are
     private int uniqueUsers(){
     int count = 0;
     List<string> strings = new List<string>();
@@ -443,7 +436,7 @@ private void finalDisplay(string fileName)
     }
     return count;
     }
-
+    // which reader has the most scans
     private string mostReaderScans(){
         @if (readerIDDict != null && readerIDDict.Count > 0){
         int maxVal = 0;
@@ -464,7 +457,7 @@ private void finalDisplay(string fileName)
         return null;
     }
     }
-
+    // which reader has the least scans
     private List<string> leastReaderScans(){
         @if (readerIDDict != null && readerIDDict.Count > 0){
         List<string> minVals = new List<string>();
@@ -496,7 +489,7 @@ private void finalDisplay(string fileName)
         return null;
     }
     }
-
+    // processes the top five panels and orders them by scans
     private List<List<ReaderEvent>> processTopFive(){
     if (readerIDDict == null || readerIDDict.Count == 0)
     {
