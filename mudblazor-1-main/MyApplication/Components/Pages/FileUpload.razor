@@ -99,16 +99,12 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var kvp in masterDictionary)
+            @foreach (var kvp in orderedMasterDictionary())
             {
-                var dayOfWeek = kvp.Key; 
-                var readerEvents = kvp.Value;
-
                 <tr>
-                    <td>@dayOfWeek</td>
-                    <td>@readerEvents.Count</td>
+                    <td>@kvp.Key</td>
+                    <td>@kvp.Value.Count</td>
                 </tr>
-            }
             }
         </tbody>
     </MudSimpleTable>
@@ -133,6 +129,10 @@ else
 @code
 {
     // variables 
+    private readonly List<string> dayOrder = new List<string>
+    {
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    };
     private TimeSpan autocycletime = new TimeSpan(0,0,10);
     private bool arrows = true;
     private bool bullets = true;
@@ -239,6 +239,7 @@ else
             }
             return returnDict;
             }
+        
     public static List<String[]>? returnStrings(string Filename){
     String line;
     List<String[]> returnString = new List<string[]>();
@@ -370,13 +371,13 @@ private void finalDisplay(string fileName)
         {
             switch (kvp.Key)
             {
-                case "Monday": eventCounts[0] = kvp.Value.Count; break;
-                case "Tuesday": eventCounts[1] = kvp.Value.Count; break;
-                case "Wednesday": eventCounts[2] = kvp.Value.Count; break;
-                case "Thursday": eventCounts[3] = kvp.Value.Count; break;
-                case "Friday": eventCounts[4] = kvp.Value.Count; break;
-                case "Saturday": eventCounts[5] = kvp.Value.Count; break;
-                case "Sunday": eventCounts[6] = kvp.Value.Count; break;
+                case "Sunday": eventCounts[0] = kvp.Value.Count; break;
+                case "Monday": eventCounts[1] = kvp.Value.Count; break;
+                case "Tuesday": eventCounts[2] = kvp.Value.Count; break;
+                case "Wednesday": eventCounts[3] = kvp.Value.Count; break;
+                case "Thursday": eventCounts[4] = kvp.Value.Count; break;
+                case "Friday": eventCounts[5] = kvp.Value.Count; break;
+                case "Saturday": eventCounts[6] = kvp.Value.Count; break;
             }
         }
         Series[0].Data = eventCounts;
@@ -503,4 +504,13 @@ private void finalDisplay(string fileName)
         .ToList();
 }
 
+private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictionary()
+    {
+        if (masterDictionary != null && masterDictionary.Count > 0)
+        {
+            return masterDictionary
+                .OrderBy(kvp => dayOrder.IndexOf(kvp.Key)); 
+        }
+        return Enumerable.Empty<KeyValuePair<string, List<ReaderEvent>>>();
+    }
 }
