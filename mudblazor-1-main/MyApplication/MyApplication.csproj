@@ -8,6 +8,8 @@
 
 
   <ItemGroup>
+    <PackageReference Include="itext" Version="8.0.4" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.4" />
     <PackageReference Include="MudBlazor" Version="8.4" />
   </ItemGroup>
 </Project>

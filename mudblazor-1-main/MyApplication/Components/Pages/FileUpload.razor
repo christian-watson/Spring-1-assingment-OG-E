@@ -328,16 +328,12 @@ else
         FileType = StaticReaderEvent.FileType;
         FileName = StaticReaderEvent.FileName;
         LastModified = StaticReaderEvent.LastModified;
-        Console.WriteLine("new test thingy");
         StateHasChanged();
         try
         {
             var fileStream = browserFile.OpenReadStream(MAX_FILESIZE);
-            Console.WriteLine("new test thingy2");
             var targetFilePath = Path.Combine(Path.GetTempPath(), FileName);
-            Console.WriteLine("new test thingy3");
             Console.WriteLine($"Saving file to: {targetFilePath}");
-            Console.WriteLine("new test thingy4");
 
             using (var destinationStream = new FileStream(targetFilePath, FileMode.Create))
             {
@@ -360,6 +356,9 @@ private void finalDisplay(string fileName)
         List<string[]> listCount = ReaderEvent.returnStrings(fileName);
         if (listCount != null)
         {
+            using var document = new Document(new PdfDocument(new PdfWriter("new-test-pdf.pdf")));
+            document.Add(new Paragraph("Hello World!"));
+            Console.WriteLine("testing this out");
             newEvents = ReaderEvent.Display(listCount);
             readerIDDict = ReaderEvent.returnDictionary(newEvents);
             masterDictionary = ReaderEvent.masterDict(newEvents);
@@ -394,7 +393,9 @@ private void finalDisplay(string fileName)
     {
         if (!string.IsNullOrEmpty(FilePath))
         {
+            Console.WriteLine("test thingy 3")
             finalDisplay(FilePath);
+            Console.WriteLine("testing2";)
             StateHasChanged();
         }
     }
@@ -423,19 +424,17 @@ private void finalDisplay(string fileName)
     }
     // identifies how many unique users there are
     private int uniqueUsers(){
-    int count = 0;
     List<string> strings = new List<string>();
     if (readerIDDict != null && readerIDDict.Count > 0){
         foreach(var kvp in readerIDDict){
             @foreach(ReaderEvent i in kvp.Value){
                     if(!strings.Contains(i.ReaderIdHash)){
                         strings.Add(i.ReaderIdHash);
-                        count++;
                     }
                 }
         }
     }
-    return count;
+    return strings.Count;
     }
     // which reader has the most scans
     private string mostReaderScans(){
@@ -513,4 +512,8 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
         }
         return Enumerable.Empty<KeyValuePair<string, List<ReaderEvent>>>();
     }
+
+ private void savePageAsPDF(){
+
+} 
 }
