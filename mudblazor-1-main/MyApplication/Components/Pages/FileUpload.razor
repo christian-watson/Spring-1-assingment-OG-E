@@ -126,6 +126,8 @@ else
 </div>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="returnHome">Upload another file</MudButton>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="downloadNewPDF">Download a summarized .pdf</MudButton>
 @code
 {
     // variables 
@@ -353,6 +355,7 @@ else
 private void finalDisplay(string fileName)
 // calls the method to populate the dictionaries and lists, displays info
     {
+        StaticReaderEvent.FileName = Path.GetFileName(fileName);
         List<string[]> listCount = ReaderEvent.returnStrings(fileName);
         if (listCount != null)
         {
@@ -507,6 +510,13 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
                 .OrderBy(kvp => dayOrder.IndexOf(kvp.Key)); 
         }
         return Enumerable.Empty<KeyValuePair<string, List<ReaderEvent>>>();
+    }
+
+    private void downloadNewPDF(){
+        string currentDateTime = DateTime.Now.ToString("MM-dd-yyyy hh-mm-ss" );
+        Console.WriteLine(StaticReaderEvent.FileName);
+        using var document = new Document(new PdfDocument(new PdfWriter(StaticReaderEvent.FileName + " at " + currentDateTime + ".pdf")));
+        document.Add(new Paragraph($"File Name: {StaticReaderEvent.FileName} at {currentDateTime} time"));
     }
 
 }
