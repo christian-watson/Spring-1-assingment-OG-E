@@ -1,0 +1,18 @@
+@page "/DownloadPDF"
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="downloadNewPDF">Upload another file</MudButton>
+<p>testing</p>
+<p>@testing</p>
+@code{
+    public string testing = "";
+    private void downloadNewPDF(){
+        string newTest123 = "testing123";
+        string currentDateTime = DateTime.Now.ToString("MM-dd-yyyy");
+        string currentTime = DateTime.Now.ToString("hh-mm");
+        Console.WriteLine(currentDateTime);
+        using var document = new Document(new PdfDocument(new PdfWriter(currentDateTime + " " + currentTime + ".pdf")));
+        document.Add(new Paragraph("Hello World! Can this be read at the moment?"));
+        testing = "test work";
+    }
+    
+}

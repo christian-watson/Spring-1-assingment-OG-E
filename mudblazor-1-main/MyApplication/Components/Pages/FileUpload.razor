@@ -356,9 +356,7 @@ private void finalDisplay(string fileName)
         List<string[]> listCount = ReaderEvent.returnStrings(fileName);
         if (listCount != null)
         {
-            using var document = new Document(new PdfDocument(new PdfWriter("new-test-pdf.pdf")));
-            document.Add(new Paragraph("Hello World!"));
-            Console.WriteLine("testing this out");
+            
             newEvents = ReaderEvent.Display(listCount);
             readerIDDict = ReaderEvent.returnDictionary(newEvents);
             masterDictionary = ReaderEvent.masterDict(newEvents);
@@ -393,9 +391,7 @@ private void finalDisplay(string fileName)
     {
         if (!string.IsNullOrEmpty(FilePath))
         {
-            Console.WriteLine("test thingy 3")
             finalDisplay(FilePath);
-            Console.WriteLine("testing2";)
             StateHasChanged();
         }
     }
@@ -513,7 +509,4 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
         return Enumerable.Empty<KeyValuePair<string, List<ReaderEvent>>>();
     }
 
- private void savePageAsPDF(){
-
-} 
 }
