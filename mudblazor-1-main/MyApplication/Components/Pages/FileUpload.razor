@@ -146,7 +146,7 @@ else
         ChartPalette = new[] { "#ef4638"},
     };
     
-    public string[] XAxisLabels = {"Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday","Sunday"};
+    public string[] XAxisLabels = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday"};
     IList<IBrowserFile> files = new List<IBrowserFile>();
     private Dictionary<string, List<ReaderEvent>> readerIDDict = StaticReaderEvent.ReaderIDDict;
     private Dictionary<string, List<ReaderEvent>> masterDictionary = StaticReaderEvent.MasterDictionary;
@@ -513,10 +513,46 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
     }
 
     private void downloadNewPDF(){
-        string currentDateTime = DateTime.Now.ToString("MM-dd-yyyy hh-mm-ss" );
+        // creating a currentDateTimeFile specifically to use in the file name due to windows blocking all file names with ":" or "/"
+        string currentDateTimeFile = DateTime.Now.ToString("MM-dd-yyyy hh-mm-ss" );
+        string currentDateTimeText = DateTime.Now.ToString("MM/dd/yyyy at hh:mm:ss");
         Console.WriteLine(StaticReaderEvent.FileName);
-        using var document = new Document(new PdfDocument(new PdfWriter(StaticReaderEvent.FileName + " at " + currentDateTime + ".pdf")));
-        document.Add(new Paragraph($"File Name: {StaticReaderEvent.FileName} at {currentDateTime} time"));
+        string filePathName = StaticReaderEvent.FileName + " at " + currentDateTimeFile + ".pdf";
+        using var doc = new Document(new PdfDocument(new PdfWriter(filePathName)));
+        doc.Add(new Paragraph("Summary of information from .csv"));
+        Table baseInfoTable = new Table(UnitValue.CreatePercentArray(2)).UseAllAvailableWidth();
+        baseInfoTable.AddCell("Uploaded .csv file name");
+        baseInfoTable.AddCell($"{StaticReaderEvent.FileName}");
+        baseInfoTable.AddCell("Date & Time downloaded");
+        baseInfoTable.AddCell($"{currentDateTimeText}");
+        baseInfoTable.AddCell("Most scans by User ID hash");
+        baseInfoTable.AddCell($"{returnMostScans()}");
+        doc.Add(baseInfoTable);
+        doc.Add(new Paragraph("Top 5 most active readers"));
+        Table readerEntryTable = new Table(UnitValue.CreatePercentArray(3)).UseAllAvailableWidth();
+        foreach (var readerEvents in processTopFive())
+            {
+                var readerId = readerEvents.First().ReaderId;
+                var readerName = readerEvents.First().ReaderDesc;
+                var scanCount = readerEvents.Count;
+                readerEntryTable.AddCell($"Reader ID: {readerId.ToString()}");
+                readerEntryTable.AddCell($"Reader Name: {readerName.ToString()}");
+                readerEntryTable.AddCell($"Number of Scans: {scanCount.ToString()}");
+            } 
+        doc.Add(readerEntryTable);
+        Table entriesByDayOfWeek = new Table(UnitValue.CreatePercentArray(2)).UseAllAvailableWidth();
+        doc.Add(new Paragraph("Day of the week and entries per day"));
+        foreach (var kvp in orderedMasterDictionary())
+            {
+                entriesByDayOfWeek.AddCell($"Day: {kvp.Key}");
+                entriesByDayOfWeek.AddCell($"Number of scans: {kvp.Value.Count.ToString()}");
+            } 
+        doc.Add(entriesByDayOfWeek);
+    
+
+        
+
+        
     }
 
 }
