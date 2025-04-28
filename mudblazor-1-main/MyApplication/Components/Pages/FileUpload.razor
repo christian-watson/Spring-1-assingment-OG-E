@@ -1,11 +1,11 @@
 @page "/upload"
 @inject NavigationManager NavManager
 
-@* mudcarousel item that displays the most scans by user IDs, the most scans on a reader, the unique users scanned, and the least reader scans*@
+@* mudcarousel item that displays the most scans by user IDs, the most scans on a reader, the unique users scanned, and the least reader scans
 <MudCarousel Class="mud-width-full" Style="height:100px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" AutoCycleTime ="@autocycletime" TData="object">
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
         <div class="d-flex" style="height:100%">
-            @* <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" /> *@
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
             <MudText Style="font-size:20px"  Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Most scans by UserID: @returnMostScans()</MudText>
         </div>
     </MudCarouselItem>
@@ -26,7 +26,24 @@
     </MudCarouselItem>
     
 </MudCarousel>
-
+<br><br>
+*@
+<MudGrid>
+    <MudItem xs="3">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">
+            Most scans by UserID: @returnMostScans()
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="3">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">Most scans: @mostReaderScans()</MudPaper>
+    </MudItem>
+    <MudItem xs="3">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">Unique users scanned: @uniqueUsers()</MudPaper>
+    </MudItem>
+    <MudItem xs="3">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">Least reader scans: @foreach(var i in leastReaderScans()){@i}</MudPaper>
+    </MudItem>
+</MudGrid>
 <br><br>
 
 
@@ -90,7 +107,6 @@ else
 @* loops through events and orders them in days of the week  *@
 @if (masterDictionary != null && masterDictionary.Count > 0)
 {
-
     <MudSimpleTable>
         <thead>
             <tr style="background-color: black; color:white;">
@@ -99,38 +115,49 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var kvp in orderedMasterDictionary())
+            @foreach (var kvp in orderedMasterDictionary() ?? Enumerable.Empty<KeyValuePair<string, List<ReaderEvent>>>())
             {
                 <tr>
                     <td>@kvp.Key</td>
-                    <td>@kvp.Value.Count</td>
+                    <td>@kvp.Value?.Count</td>
                 </tr>
             }
         </tbody>
     </MudSimpleTable>
-
 }
 else
 {
     <p>No data available.</p>
     <p>@(masterDictionary !=null)</p>
     <p>@(masterDictionary.Count > 0)</p>
-    @foreach(var kvp in masterDictionary){
+    @foreach(var kvp in masterDictionary ?? new Dictionary<string, List<ReaderEvent>>()){
         <p>@kvp.Value</p>
     }
-
 }
 @* chart that displays days of the week activity*@
-<div>
+<div style="text-align:center">
+    @* <MudMenu Icon="@Icons.Material.Filled.AddCircle"
+         AriaLabel="Open user menu">
+    <MudMenuItem Label="Change the date bounds" OnClick="@changedDateBounds"/>
+</MudMenu>
+@if(menuActive){
+        string firstLabel = $"Select the earliest and latest dates to change the graph. The earliest possible date is {earliestDateTime} and the latest date is {latestDateTime}.";
+        <p>@firstLabel</p>
+        <MudDatePicker Label="Earliest date to test" MinDate="@earliestDateTime" MaxDate="@latestDateTime" @bind-Date="earliestDateQuery" ValueChanged="EarliestDateChanged"/>
+        <MudDatePicker Label="Latest date to test" MinDate="@earliestDateTime" MaxDate="@latestDateTime" @bind-Date="latestDateQuery"/>
+    } *@
     <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options"/>
 </div>
-
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="returnHome">Upload another file</MudButton>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="downloadNewPDF">Download a summarized .pdf</MudButton>
 @code
 {
     // variables 
+     private DateTime? earliestDateQuery = earliestDateTime;
+     private DateTime? latestDateQuery = latestDateTime;
+    public bool menuActive = false;
+    public string TextValue { get; set; }
     private readonly List<string> dayOrder = new List<string>
     {
         "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
@@ -141,6 +168,8 @@ else
     private bool enableSwipeGesture = true;
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
+    public static DateTime earliestDateTime { get; set; } = DateTime.MinValue;
+    public static DateTime latestDateTime { get; set; } = DateTime.MaxValue;
     private int Index = -1;
     public ChartOptions Options = new ChartOptions(){
         ChartPalette = new[] { "#ef4638"},
@@ -149,7 +178,7 @@ else
     public string[] XAxisLabels = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday"};
     IList<IBrowserFile> files = new List<IBrowserFile>();
     private Dictionary<string, List<ReaderEvent>> readerIDDict = StaticReaderEvent.ReaderIDDict;
-    private Dictionary<string, List<ReaderEvent>> masterDictionary = StaticReaderEvent.MasterDictionary;
+    public Dictionary<string, List<ReaderEvent>> masterDictionary = StaticReaderEvent.MasterDictionary;
     public List<ChartSeries> Series = StaticReaderEvent.Series;
     public string FileName { get; set; } = StaticReaderEvent.FileName;
     public long FileSize { get; set; } = StaticReaderEvent.FileSize;
@@ -213,14 +242,18 @@ else
             foreach(ReaderEvent i in newReaderEvents){
                 DateTime dateTime = DateTime.Parse(i.Time);
                 string dayValue = dateTime.ToString("D").Split(",")[0];
-                if(keyValuePairs.ContainsKey(dayValue)){
-                    keyValuePairs.TryGetValue(dayValue, out var value);
-                    value.Add(i);
-                }
-                else{
-                    List<ReaderEvent> newReader = new List<ReaderEvent>();
-                        newReader.Add(i);
-                        keyValuePairs.Add(dayValue,newReader);
+                if(DateTime.Compare(DateTime.Parse(i.Time),earliestDateTime) > 0){
+                    if(dateTime > earliestDateTime && dateTime < latestDateTime){
+                    if(keyValuePairs.ContainsKey(dayValue)){
+                        keyValuePairs.TryGetValue(dayValue, out var value);
+                        value.Add(i);
+                    }
+                    else{
+                        List<ReaderEvent> newReader = new List<ReaderEvent>();
+                            newReader.Add(i);
+                            keyValuePairs.Add(dayValue,newReader);
+                    }
+                    }
                 }
             }
             return keyValuePairs;
@@ -305,7 +338,7 @@ else
         public static Dictionary<string, List<ReaderEvent>> MasterDictionary { get; set; } = new();
         public static List<ChartSeries> Series  { get; set; } = new()
         {
-            new ChartSeries() { Name = "Days of the week", Data = new double[6]  },
+            new ChartSeries() { Name = "Days of the week", Data = new double[7]  },
         };
     }
 
@@ -350,6 +383,23 @@ else
             ErrorMessage = exception.Message + "test";
         }
     }
+}
+private void EarliestDateChanged(DateTime? newDate)
+    {
+        populateMasterDictionary();
+    }
+
+private void populateMasterDictionary(){
+    Dictionary<string,List<ReaderEvent>> newmasterDictionary = new Dictionary<string, List<ReaderEvent>>();
+    List<string[]> listCount = ReaderEvent.returnStrings(FilePath);
+    if(listCount != null){
+        newEvents = ReaderEvent.Display(listCount);
+        newmasterDictionary = ReaderEvent.masterDict(newEvents);
+        Console.WriteLine("method test");
+        masterDictionary = newmasterDictionary;
+    }
+    Console.WriteLine("method test 2");
+   
 }
 
 private void finalDisplay(string fileName)
@@ -407,7 +457,7 @@ private void finalDisplay(string fileName)
     List<string> strings = new List<string>();
     foreach (var kvp in readerIDDict)
             {
-                @foreach(ReaderEvent i in kvp.Value){
+                foreach(ReaderEvent i in kvp.Value){
                     strings.Add(i.ReaderIdHash);
                 }
                 
@@ -437,10 +487,10 @@ private void finalDisplay(string fileName)
     }
     // which reader has the most scans
     private string mostReaderScans(){
-        @if (readerIDDict != null && readerIDDict.Count > 0){
+        if (readerIDDict != null && readerIDDict.Count > 0){
         int maxVal = 0;
         string maxValReader = "";
-            @foreach (var kvp in readerIDDict)
+            foreach (var kvp in readerIDDict)
                 {
                 var readerId = kvp.Key; 
                 var readerEvents = kvp.Value;
@@ -458,11 +508,11 @@ private void finalDisplay(string fileName)
     }
     // which reader has the least scans
     private List<string> leastReaderScans(){
-        @if (readerIDDict != null && readerIDDict.Count > 0){
+        if (readerIDDict != null && readerIDDict.Count > 0){
         List<string> minVals = new List<string>();
         int minVal = int.MaxValue;
         string minValReader = "";
-            @foreach (var kvp in readerIDDict)
+            foreach (var kvp in readerIDDict)
                 {
                 var readerId = kvp.Key; 
                 var readerEvents = kvp.Value;
@@ -504,6 +554,7 @@ private void finalDisplay(string fileName)
 
 private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictionary()
     {
+        
         if (masterDictionary != null && masterDictionary.Count > 0)
         {
             return masterDictionary
@@ -544,15 +595,77 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
         doc.Add(new Paragraph("Day of the week and entries per day"));
         foreach (var kvp in orderedMasterDictionary())
             {
-                entriesByDayOfWeek.AddCell($"Day: {kvp.Key}");
+                entriesByDayOfWeek.AddCell($"{kvp.Key}");
                 entriesByDayOfWeek.AddCell($"Number of scans: {kvp.Value.Count.ToString()}");
             } 
         doc.Add(entriesByDayOfWeek);
     
-
-        
-
         
     }
+
+    public void changedDateBounds()
+{
+    List<DateTimeOffset> dateTimeList = new List<DateTimeOffset>();
+    DateTimeOffset testDateTime = new DateTimeOffset();
+    earliestDateTime = DateTime.MaxValue;
+    latestDateTime = DateTime.MinValue;
+    foreach (var kvp in masterDictionary)
+    {
+        foreach (ReaderEvent i in kvp.Value)
+        {
+            try
+            {
+                DateTimeOffset newDateTime = DateTimeOffset.ParseExact(i.Time, "yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
+                dateTimeList.Add(newDateTime);
+                if (newDateTime.UtcDateTime < earliestDateTime)
+                {
+                    earliestDateTime = newDateTime.UtcDateTime;
+                }
+                if (latestDateTime == null || newDateTime.UtcDateTime > latestDateTime)
+                {
+                    latestDateTime = newDateTime.UtcDateTime;
+                }
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"Error parsing date '{i.Time}': {ex.Message}");
+            }
+        }
+    }
+
+    latestDateTime = dateTimeList.Max().UtcDateTime;
+    menuActive = true;
+    earliestDateQuery = earliestDateTime;
+    latestDateQuery = latestDateTime;
+} 
+
+private void updateChartSeries()
+{
+    double[] eventCounts = new double[7];
+    foreach (var kvp in masterDictionary)
+    {
+        switch (kvp.Key)
+        {
+            case "Sunday": eventCounts[0] = kvp.Value.Count; break;
+            case "Monday": eventCounts[1] = kvp.Value.Count; break;
+            case "Tuesday": eventCounts[2] = kvp.Value.Count; break;
+            case "Wednesday": eventCounts[3] = kvp.Value.Count; break;
+            case "Thursday": eventCounts[4] = kvp.Value.Count; break;
+            case "Friday": eventCounts[5] = kvp.Value.Count; break;
+            case "Saturday": eventCounts[6] = kvp.Value.Count; break;
+        }
+    }
+    Series[0].Data = eventCounts;
+}
+
+private void updateMasterDictionary(){
+    Console.WriteLine("new test");
+    foreach(var kvp in masterDictionary){
+        foreach(var i in kvp.Value){
+            Console.WriteLine(i);
+        }
+    }
+}
+
 
 }
