@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LhcsWSJ313Rvh9JdUTKPPkrdrzuUtc/nf0udlj0dWd8=",
+  "Hash": "AssH/y0fpDiJllXR6wkAL6frOLxAbG8vu0zkwXlNrt4=",
   "Source": "MyApplication",
   "BasePath": "_content/MyApplication",
   "Mode": "Default",
@@ -91,6 +91,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\OGE.png"
+    },
+    {
+      "Identity": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\js\\download.js",
+      "SourceId": "MyApplication",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
+      "BasePath": "_content/MyApplication",
+      "RelativePath": "js/download.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\download.js"
     }
   ]
 }

@@ -1,47 +1,25 @@
 @page "/upload"
 @inject NavigationManager NavManager
+@inject IJSRuntime JS
+ @using Microsoft.JSInterop
+@inject IWebHostEnvironment env
 
-@* mudcarousel item that displays the most scans by user IDs, the most scans on a reader, the unique users scanned, and the least reader scans
-<MudCarousel Class="mud-width-full" Style="height:100px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" AutoCycleTime ="@autocycletime" TData="object">
-    <MudCarouselItem Transition="transition" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-            <MudText Style="font-size:20px"  Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Most scans by UserID: @returnMostScans()</MudText>
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudText Style="font-size:20px" Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Most scans: @mostReaderScans()</MudText>
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudText Style="font-size:20px" Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Unique users scanned: @uniqueUsers()</MudText>
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudText Style="font-size:20px" Color="@Color.Secondary" Class="mx-auto my-auto" Align="Align.Center">Least reader scans: @foreach(var i in leastReaderScans()){@i}</MudText>
-        </div>
-    </MudCarouselItem>
-    
-</MudCarousel>
-<br><br>
-*@
 <MudGrid>
     <MudItem xs="3">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">
-            Most scans by UserID: @returnMostScans()
-        </MudPaper>
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px"><div style="text-align: center;">Most scans by UserID: @returnMostScans()</div></MudPaper>
     </MudItem>
     <MudItem xs="3">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">Most scans: @mostReaderScans()</MudPaper>
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; color:white; height:150px;"><div style="text-align: center;">Most scans: <br><br>@mostReaderScans()</div></MudPaper>
     </MudItem>
     <MudItem xs="3">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">Unique users scanned: @uniqueUsers()</MudPaper>
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px"><div style="text-align: center;">Unique users scanned: @uniqueUsers()</div></MudPaper>
     </MudItem>
     <MudItem xs="3">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px">Least reader scans: @foreach(var i in leastReaderScans()){@i}</MudPaper>
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="background-color: #ef4638; Color:white; Height:150px"><div style="text-align: center;">
+            Least reader scans: @foreach(var i in leastReaderScans()){
+                <br><br>
+                @i
+                }</div></MudPaper>
     </MudItem>
 </MudGrid>
 <br><br>
@@ -127,7 +105,7 @@ else
 }
 else
 {
-    <p>No data available.</p>
+    <p>No data available.</p
     <p>@(masterDictionary !=null)</p>
     <p>@(masterDictionary.Count > 0)</p>
     @foreach(var kvp in masterDictionary ?? new Dictionary<string, List<ReaderEvent>>()){
@@ -143,8 +121,8 @@ else
 @if(menuActive){
         string firstLabel = $"Select the earliest and latest dates to change the graph. The earliest possible date is {earliestDateTime} and the latest date is {latestDateTime}.";
         <p>@firstLabel</p>
-        <MudDatePicker Label="Earliest date to test" MinDate="@earliestDateTime" MaxDate="@latestDateTime" @bind-Date="earliestDateQuery" ValueChanged="EarliestDateChanged"/>
-        <MudDatePicker Label="Latest date to test" MinDate="@earliestDateTime" MaxDate="@latestDateTime" @bind-Date="latestDateQuery"/>
+        <MudDatePicker Style="width:400px;" Label="Earliest date to test" MinDate="@earliestDateTime" MaxDate="@latestDateQuery" @bind-Date="earliestDateQuery" @bind-Date:event="EarliestDateChanged"/>
+        <MudDatePicker Style="width:400px;" Label="Latest date to test" MinDate="@earliestDateQuery" MaxDate="@latestDateTime" @bind-Date="latestDateQuery"/>
     } *@
     <MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options"/>
 </div>
@@ -154,6 +132,7 @@ else
 @code
 {
     // variables 
+    private IJSObjectReference? _jsModule;
      private DateTime? earliestDateQuery = earliestDateTime;
      private DateTime? latestDateQuery = latestDateTime;
     public bool menuActive = false;
@@ -186,6 +165,15 @@ else
     public string FileType { get; set; } = StaticReaderEvent.FileType;
     public DateTimeOffset LastModified { get; set; } = StaticReaderEvent.LastModified;
     public string ErrorMessage { get; set; } = "";
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+                {
+                    if (firstRender)
+                    {
+                        _jsModule = await JS.InvokeAsync<IJSObjectReference>(
+                            "import", "./js/download.js");
+                    }
+                    await base.OnAfterRenderAsync(firstRender);
+                }
     private void UploadFiles(IReadOnlyList<IBrowserFile> files)
     {
         foreach (var file in files)
@@ -238,6 +226,7 @@ else
         }
         // populates the dictionary that contains the date time info with days of the week
          public static Dictionary<string,List<ReaderEvent>> masterDict(List<ReaderEvent> newReaderEvents){
+            Console.WriteLine("new testing");
             Dictionary<string,List<ReaderEvent>> keyValuePairs = new Dictionary<string, List<ReaderEvent>>();
             foreach(ReaderEvent i in newReaderEvents){
                 DateTime dateTime = DateTime.Parse(i.Time);
@@ -247,6 +236,7 @@ else
                     if(keyValuePairs.ContainsKey(dayValue)){
                         keyValuePairs.TryGetValue(dayValue, out var value);
                         value.Add(i);
+                        
                     }
                     else{
                         List<ReaderEvent> newReader = new List<ReaderEvent>();
@@ -386,10 +376,11 @@ else
 }
 private void EarliestDateChanged(DateTime? newDate)
     {
-        populateMasterDictionary();
+        Console.WriteLine("new testing thang");
+        populateMasterDictionary(newDate);
     }
 
-private void populateMasterDictionary(){
+private void populateMasterDictionary(DateTime? newDate){
     Dictionary<string,List<ReaderEvent>> newmasterDictionary = new Dictionary<string, List<ReaderEvent>>();
     List<string[]> listCount = ReaderEvent.returnStrings(FilePath);
     if(listCount != null){
@@ -563,13 +554,21 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
         return Enumerable.Empty<KeyValuePair<string, List<ReaderEvent>>>();
     }
 
-    private void downloadNewPDF(){
-        // creating a currentDateTimeFile specifically to use in the file name due to windows blocking all file names with ":" or "/"
-        string currentDateTimeFile = DateTime.Now.ToString("MM-dd-yyyy hh-mm-ss" );
-        string currentDateTimeText = DateTime.Now.ToString("MM/dd/yyyy at hh:mm:ss");
-        Console.WriteLine(StaticReaderEvent.FileName);
-        string filePathName = StaticReaderEvent.FileName + " at " + currentDateTimeFile + ".pdf";
-        using var doc = new Document(new PdfDocument(new PdfWriter(filePathName)));
+    private async Task downloadNewPDF()
+{
+    // creating a currentDateTimeFile specifically to use in the file name due to windows blocking all file names with ":" or "/"
+    string currentDateTimeFile = DateTime.Now.ToString("MM-dd-yyyy hh-mm-ss");
+    string currentDateTimeText = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
+    Console.WriteLine(StaticReaderEvent.FileName);
+    string filePathName = StaticReaderEvent.FileName + " at " + currentDateTimeFile + ".pdf";
+
+    byte[] pdfBytes;
+    using (var memoryStream = new MemoryStream())
+    {
+        var pdfWriter = new PdfWriter(memoryStream);
+        var pdfDoc = new PdfDocument(pdfWriter);
+        var doc = new Document(pdfDoc);
+        
         doc.Add(new Paragraph("Summary of information from .csv"));
         Table baseInfoTable = new Table(UnitValue.CreatePercentArray(2)).UseAllAvailableWidth();
         baseInfoTable.AddCell("Uploaded .csv file name");
@@ -579,32 +578,59 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
         baseInfoTable.AddCell("Most scans by User ID hash");
         baseInfoTable.AddCell($"{returnMostScans()}");
         doc.Add(baseInfoTable);
-        doc.Add(new Paragraph("Top 5 most active readers"));
+        doc.Add(new Paragraph().SetMarginTop(20));
         Table readerEntryTable = new Table(UnitValue.CreatePercentArray(3)).UseAllAvailableWidth();
+        readerEntryTable.AddCell("Reader ID");
+        readerEntryTable.AddCell("Reader Name");
+        readerEntryTable.AddCell("Number of scans");
         foreach (var readerEvents in processTopFive())
-            {
-                var readerId = readerEvents.First().ReaderId;
-                var readerName = readerEvents.First().ReaderDesc;
-                var scanCount = readerEvents.Count;
-                readerEntryTable.AddCell($"Reader ID: {readerId.ToString()}");
-                readerEntryTable.AddCell($"Reader Name: {readerName.ToString()}");
-                readerEntryTable.AddCell($"Number of Scans: {scanCount.ToString()}");
-            } 
+        {
+            var readerId = readerEvents.First().ReaderId;
+            var readerName = readerEvents.First().ReaderDesc;
+            var scanCount = readerEvents.Count;
+            readerEntryTable.AddCell($"{readerId.ToString()}");
+            readerEntryTable.AddCell($"{readerName.ToString()}");
+            readerEntryTable.AddCell($"{scanCount.ToString()}");
+        }
         doc.Add(readerEntryTable);
+        doc.Add(new Paragraph().SetMarginTop(20));
         Table entriesByDayOfWeek = new Table(UnitValue.CreatePercentArray(2)).UseAllAvailableWidth();
-        doc.Add(new Paragraph("Day of the week and entries per day"));
+        entriesByDayOfWeek.AddCell("Day of the week");
+        entriesByDayOfWeek.AddCell("Scans on day of the week");
         foreach (var kvp in orderedMasterDictionary())
-            {
-                entriesByDayOfWeek.AddCell($"{kvp.Key}");
-                entriesByDayOfWeek.AddCell($"Number of scans: {kvp.Value.Count.ToString()}");
-            } 
+        {
+            entriesByDayOfWeek.AddCell($"{kvp.Key}");
+            entriesByDayOfWeek.AddCell($"{kvp.Value.Count.ToString()}");
+        }
         doc.Add(entriesByDayOfWeek);
+        // adding the image into the pdf
+        var imagePath = System.IO.Path.Combine(env.WebRootPath, "images", "OGE.png");
+        ImageData imageData = ImageDataFactory.Create(imagePath);
+        Image image = new Image(imageData);
+        image.ScaleToFit(200, 200);
+        image.SetFixedPosition(400, 50);
+        doc.Add(image);
+
+        doc.Close();
+        pdfBytes = memoryStream.ToArray();
+        // javascript for downloading the pdf client side
+        if (_jsModule != null){
+            await _jsModule.InvokeVoidAsync("downloadFileFromBytes", filePathName, pdfBytes);
+        }
+        }
+        async ValueTask DisposeAsync(){
+                    if (_jsModule != null)
+                    {
+                        await _jsModule.DisposeAsync();
+                    }
+                }
     
-        
-    }
+
+}
 
     public void changedDateBounds()
 {
+    Console.WriteLine("changedDateBounds called");
     List<DateTimeOffset> dateTimeList = new List<DateTimeOffset>();
     DateTimeOffset testDateTime = new DateTimeOffset();
     earliestDateTime = DateTime.MaxValue;
@@ -619,11 +645,11 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
                 dateTimeList.Add(newDateTime);
                 if (newDateTime.UtcDateTime < earliestDateTime)
                 {
-                    earliestDateTime = newDateTime.UtcDateTime;
+                    earliestDateTime = newDateTime.LocalDateTime;
                 }
                 if (latestDateTime == null || newDateTime.UtcDateTime > latestDateTime)
                 {
-                    latestDateTime = newDateTime.UtcDateTime;
+                    latestDateTime = newDateTime.LocalDateTime;
                 }
             }
             catch (FormatException ex)
@@ -633,7 +659,6 @@ private IEnumerable<KeyValuePair<string, List<ReaderEvent>>> orderedMasterDictio
         }
     }
 
-    latestDateTime = dateTimeList.Max().UtcDateTime;
     menuActive = true;
     earliestDateQuery = earliestDateTime;
     latestDateQuery = latestDateTime;
@@ -658,14 +683,15 @@ private void updateChartSeries()
     Series[0].Data = eventCounts;
 }
 
-private void updateMasterDictionary(){
+@* private void updateMasterDictionary(){
     Console.WriteLine("new test");
     foreach(var kvp in masterDictionary){
         foreach(var i in kvp.Value){
             Console.WriteLine(i);
         }
     }
-}
+} *@
+
 
 
 }

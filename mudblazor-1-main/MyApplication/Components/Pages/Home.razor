@@ -25,7 +25,7 @@
     async Task Navigate(IBrowserFile file)
     {
          if (file == null) return;
-        var tempPath = Path.Combine(Path.GetTempPath(), file.Name);
+        var tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), file.Name);
         using var stream = file.OpenReadStream(MAX_FILESIZE);
         using var fileStream = new FileStream(tempPath, FileMode.Create);
         await stream.CopyToAsync(fileStream);

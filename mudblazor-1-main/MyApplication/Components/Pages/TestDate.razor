@@ -1,0 +1,35 @@
+﻿@page "/testdate"
+@inject IJSRuntime JS
+
+<MudDatePicker Label="Test Date" @bind-Date="testDate" @bind-Date:event="TestDateChanged" />
+<button @onclick="DownloadFileFromStream">
+    Download File From Stream
+</button>
+
+
+
+@code {
+    private DateTime? testDate;
+
+    private void TestDateChanged(DateTime? newDate)
+    {
+        Console.WriteLine($"TestDateChanged: {newDate}");
+    }
+    private Stream GetFileStream()
+    {
+        var randomBinaryData = new byte[50 * 1024];
+        var fileStream = new MemoryStream(randomBinaryData);
+
+        return fileStream;
+    }
+
+    private async Task DownloadFileFromStream()
+    {
+        var fileStream = GetFileStream();
+        var fileName = "log.bin";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+}

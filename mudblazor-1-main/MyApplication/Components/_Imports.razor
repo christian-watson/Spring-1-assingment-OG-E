@@ -1,4 +1,5 @@
 ﻿@using System.Net.Http
+@using System.IO
 @using System.Net.Http.Json
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
@@ -11,7 +12,10 @@
 @using MyApplication
 @using MyApplication.Components
 @using static MyApplication.Components.Pages.FileUpload
-@using iText.Kernel.Pdf
-@using iText.Layout
-@using iText.Layout.Element
-@using iText.Layout.Properties
+@using iText.Kernel.Pdf;
+@using iText.Layout;
+@using iText.Layout.Element;
+@using iText.Kernel.Pdf.Canvas;
+@using iText.IO.Image;
+@using iText.Kernel.Pdf.Extgstate;
+@using iText.Layout.Properties;
