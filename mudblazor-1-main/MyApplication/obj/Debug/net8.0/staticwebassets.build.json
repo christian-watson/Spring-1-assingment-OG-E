@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< Updated upstream
   "Hash": "AssH/y0fpDiJllXR6wkAL6frOLxAbG8vu0zkwXlNrt4=",
+=======
+  "Hash": "U3786xr7qzFjvGRQHKpLlk1W0Kd1L9OAf0CCJk9Nf8k=",
+>>>>>>> Stashed changes
   "Source": "MyApplication",
   "BasePath": "_content/MyApplication",
   "Mode": "Default",
@@ -10,7 +14,7 @@
     {
       "Name": "MyApplication\\wwwroot",
       "Source": "MyApplication",
-      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
       "BasePath": "_content/MyApplication",
       "Pattern": "**"
     }
@@ -55,10 +59,10 @@
       "OriginalItemSpec": "C:\\Users\\chisc\\.nuget\\packages\\mudblazor\\8.4.0\\staticwebassets\\MudBlazor.min.js"
     },
     {
-      "Identity": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\favicon.ico",
+      "Identity": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\wwwroot\\favicon.ico",
       "SourceId": "MyApplication",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
       "BasePath": "_content/MyApplication",
       "RelativePath": "favicon.ico",
       "AssetKind": "All",
@@ -74,10 +78,10 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\images\\OGE.png",
+      "Identity": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\wwwroot\\images\\OGE.png",
       "SourceId": "MyApplication",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\wwwroot\\",
       "BasePath": "_content/MyApplication",
       "RelativePath": "images/OGE.png",
       "AssetKind": "All",

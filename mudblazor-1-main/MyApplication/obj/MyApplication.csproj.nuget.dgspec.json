@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj": {}
+    "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj": {}
   },
   "projects": {
-    "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj": {
+    "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj",
+        "projectUniqueName": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj",
         "projectName": "MyApplication",
-        "projectPath": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj",
+        "projectPath": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\MyApplication.csproj",
         "packagesPath": "C:\\Users\\chisc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\chisc\\OneDrive\\Desktop\\programming assignments\\Spring 1 assingment OG&E\\mudblazor-1-main\\MyApplication\\obj\\",
+        "outputPath": "C:\\Users\\chisc\\OneDrive\\Desktop\\Blazor_1\\blazor-file-upload\\BlazorApp\\newrepo\\Components\\Pages\\Spring-1-assingment-OG-E\\mudblazor-1-main\\MyApplication\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\chisc\\AppData\\Roaming\\NuGet\\NuGet.Config"
